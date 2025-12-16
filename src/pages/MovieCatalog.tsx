@@ -1,5 +1,3 @@
-import { log } from "console";
-import { AppHeader } from "../components/AppHeader";
 import { useEffect, useState } from "react";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
@@ -55,8 +53,7 @@ export function MovieCatalog() {
 
   return (
     <>
-      <AppHeader />
-      <main style={{ backgroundColor: "#202020", height: "100%" }}>
+      <main style={{ height: "100%" }}>
         <div className="container" style={ContainerStyle}>
           <div
             className="movies"

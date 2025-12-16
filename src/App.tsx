@@ -1,14 +1,17 @@
-import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import { AppHeader } from "./components/AppHeader";
-import { MovieCatalog } from "./pages/MovieCatalog";
+import { PageRoutes } from "./components/PageRoutes";
 import { BrowserRouter } from "react-router-dom";
+import { AppHeader } from "./components/AppHeader";
+import { GenreContext } from "./context/GenreContext";
 
 function App() {
   return (
     <BrowserRouter>
-      <MovieCatalog />
+      <>
+        <AppHeader />
+        <GenreContext />
+        <PageRoutes />
+      </>
     </BrowserRouter>
   );
 }

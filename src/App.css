@@ -71,3 +71,7 @@ h6 {
   font-size: inherit;
   font-weight: inherit;
 }
+
+body {
+  background-color: #202020;
+}
