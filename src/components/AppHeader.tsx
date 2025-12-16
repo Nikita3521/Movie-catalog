@@ -59,7 +59,7 @@ export function AppHeader() {
             </div>
             <div className="list-routes" style={ListStyle}>
               <Link
-                to="/AllFilms"
+                to="/"
                 style={{ color: "white", fontSize: "14px", fontWeight: "600" }}
               >
                 AllFilms
