@@ -1,26 +1,46 @@
-import { log } from "console";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type Genre = {
-  id: Number;
+  id: number;
   name: string;
 };
 
-export function GenreContext() {
+const GenreContext = createContext<Map<number, string>>(new Map());
+
+export function GenreMap({ children }: { children: React.ReactNode }) {
   const [genres, setGenres] = useState<Map<number, string>>(new Map());
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
+      const responseMovie = await fetch(
         "https://api.themoviedb.org/3/genre/movie/list?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en"
       );
-      const json = await response.json();
-      const genreMap = new Map<number, string>(
-        json.genres.map((genre: Genre) => [genre.id, genre.name])
+      const jsonMovie = await responseMovie.json();
+      const movie = jsonMovie.genres;
+
+      const responseTv = await fetch(
+        "https://api.themoviedb.org/3/genre/tv/list?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en"
       );
+      const jsonTv = await responseTv.json();
+      const tv = jsonTv.genres;
+
+      const json = movie.concat(tv);
+
+      const genreMap = new Map<number, string>(
+        json.map((genre: Genre) => [genre.id, genre.name])
+      );
+      // console.log(json);
+
       setGenres(genreMap);
-      console.log(genreMap);
     };
     fetchData();
   }, []);
-  return <div></div>;
+  return (
+    <GenreContext.Provider value={genres}>{children}</GenreContext.Provider>
+  );
 }
+
+export { GenreContext };
+
+export const useGenre = () => {
+  return useContext(GenreContext);
+};

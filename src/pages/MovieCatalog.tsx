@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
+import { useGenre } from "../context/GenreContext";
+import { log } from "console";
 
 const ContainerStyle = {
   margin: "0 auto",
@@ -38,6 +40,7 @@ type Movie = {
 
 export function MovieCatalog() {
   const [data, setData] = useState<Movie[]>([]);
+  const genres = useGenre();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +49,7 @@ export function MovieCatalog() {
       );
       const json = await response.json();
       setData(json.results);
-      console.log(json.results);
+      // console.log(json.results);
     };
     fetchData();
   }, []);
@@ -84,9 +87,11 @@ export function MovieCatalog() {
                     {item.title || item.original_name}
                   </h5>
                   <ul style={{ display: "flex", gap: "8px" }}>
-                    <li style={ListStyle}>Action</li>
-                    <li style={ListStyle}>Fiction</li>
-                    <li style={ListStyle}>Comedy</li>
+                    {item.genre_ids.map((e) => (
+                      <li style={ListStyle} key={`${item.id}-${e}`}>
+                        {genres.get(e)}
+                      </li>
+                    ))}
                   </ul>
                   <div
                     style={{ fontWeight: "600", display: "flex", gap: "5px" }}
