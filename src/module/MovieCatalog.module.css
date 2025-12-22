@@ -79,6 +79,12 @@
     padding: 6px 12px;
     cursor: pointer;
     border: none;
+    transition: 0.2s;
+}
+
+.btnWhite:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.363);
 }
 
 .btnDark {
@@ -89,6 +95,12 @@
     border-radius: 36px;
     padding: 6px 12px;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.btnDark:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.363);
 }
 
 .pagination {
@@ -109,6 +121,10 @@
     cursor: pointer;
     font-size: 14px;
     transition: 0.2s;
+}
+
+.pageButtonOne {
+    padding: 10px 19.3px;
 }
 
 .pageButton:disabled {

@@ -39,7 +39,7 @@ export function MovieCatalog() {
   return (
     <div className={styles.container}>
       <div className={styles.movies}>
-        <h2 className={styles.title}>All Films ({})</h2>
+        <h2 className={styles.title}>All Films (10 000)</h2>
 
         {data.map((item) => (
           <div className={styles.movie} key={item.id}>
@@ -80,7 +80,7 @@ export function MovieCatalog() {
 
         <div className={styles.pagination}>
           <button
-            className={styles.pageButton}
+            className={`${styles.pageButton} ${styles.pageButtonOne}`}
             disabled={page === 1}
             onClick={() => setPage(page - 1)}
           >
