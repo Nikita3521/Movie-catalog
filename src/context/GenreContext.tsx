@@ -16,7 +16,7 @@ export function GenreMap({ children }: { children: React.ReactNode }) {
       );
       const jsonMovie = await responseMovie.json();
       const movie = jsonMovie.genres;
-
+      //That send together
       const responseTv = await fetch(
         "https://api.themoviedb.org/3/genre/tv/list?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en"
       );
@@ -28,7 +28,7 @@ export function GenreMap({ children }: { children: React.ReactNode }) {
       const genreMap = new Map<number, string>(
         json.map((genre: Genre) => [genre.id, genre.name])
       );
-      // console.log(json);
+      // console.log(genreMap);
 
       setGenres(genreMap);
     };
