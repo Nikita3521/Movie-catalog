@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
+import arrow from "../img/MovieCatalog/arrow.png";
 import { useGenre } from "../context/GenreContext";
 import styles from "../module/MovieCatalog.module.css";
 
@@ -23,7 +24,10 @@ type Movie = {
 export function MovieCatalog() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
+  const [sortBy, setSortBy] = useState("");
   const genres = useGenre();
+  const getDate = (item: any) =>
+    item.release_date || item.first_air_date || "1900-01-01";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,15 +36,62 @@ export function MovieCatalog() {
       );
       const json = await response.json();
       setData(json.results);
+      console.log(json.results);
     };
     fetchData();
   }, [page]);
+
+  useEffect(() => {
+    const sorted = [...data];
+
+    switch (sortBy) {
+      case "rating":
+        sorted.sort((a, b) => b.vote_average - a.vote_average);
+        break;
+
+      case "date":
+        sorted.sort(
+          (a, b) =>
+            new Date(getDate(b)).getTime() - new Date(getDate(a)).getTime()
+        );
+        break;
+
+      case "title":
+        sorted.sort((a, b) =>
+          (a.title || a.original_name || "").localeCompare(
+            b.title || b.original_name || ""
+          )
+        );
+        break;
+
+      case "popularity":
+      default:
+        sorted.sort((a, b) => b.popularity - a.popularity);
+        break;
+    }
+
+    setData(sorted);
+  }, [sortBy]);
 
   return (
     <div className={styles.container}>
       <div className={styles.movies}>
         <h2 className={styles.title}>All Films (10 000)</h2>
-
+        <div className={styles.sortBox}>
+          <select
+            className={styles.sortSelect}
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="" disabled hidden>
+              Sort by...
+            </option>
+            <option value="popularity">Popularity</option>
+            <option value="rating">Rating</option>
+            <option value="date">Release Date</option>
+            <option value="title">Title</option>
+          </select>
+        </div>
         {data.map((item) => (
           <div className={styles.movie} key={item.id}>
             <img
