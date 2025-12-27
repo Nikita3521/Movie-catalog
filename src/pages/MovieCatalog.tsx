@@ -24,6 +24,7 @@ export function MovieCatalog() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
   const [total, setTotal] = useState(0);
+  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
   const genres = useGenre();
   const [sort, setSort] = useState({
     field: "popularity",
@@ -38,24 +39,43 @@ export function MovieCatalog() {
     fetchData(field, newDirection);
   };
 
-  const fetchData = async (field = sort.field, dir = sort.direction) => {
+  const fetchData = async (
+    field = sort.field,
+    dir = sort.direction,
+    genre = selectedGenre
+  ) => {
     const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?page=${page}&api_key=3a1ca9b3f541f933ecd4468611a1334e&sort_by=${field}.${dir}`
+      `https://api.themoviedb.org/3/discover/movie?page=${page}&api_key=3a1ca9b3f541f933ecd4468611a1334e&sort_by=${field}.${dir}${
+        genre ? `&with_genres=${genre}` : ""
+      }`
     );
     const json = await response.json();
-    setData(json.results);
+    setData(json.results ?? []);
     setTotal(json.total_results);
   };
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page, selectedGenre, sort]);
 
   return (
     <div className={styles.container}>
       <div className={styles.movies}>
         <h2 className={styles.title}>All Films ({total})</h2>
         <div className={styles.sortButtons}>
+          <select
+            className={styles.sortSelect}
+            value={selectedGenre || ""}
+            onChange={(e) => setSelectedGenre(Number(e.target.value))}
+          >
+            <option value="">All genres</option>
+
+            {Array.from(genres.entries()).map(([id, name]) => (
+              <option key={id} value={id}>
+                {name}
+              </option>
+            ))}
+          </select>
           <button
             className={styles.sortBtn}
             onClick={() => toggleSort("popularity")}
@@ -104,7 +124,6 @@ export function MovieCatalog() {
               <h5 className={styles.movieName}>
                 {item.title || item.original_name}
               </h5>
-
               <ul className={styles.genreList}>
                 {item.genre_ids.map((e) => (
                   <li className={styles.genreItem} key={`${item.id}-${e}`}>
