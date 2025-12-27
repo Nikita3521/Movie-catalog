@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
-import arrow from "../img/MovieCatalog/arrow.png";
 import { useGenre } from "../context/GenreContext";
 import styles from "../module/MovieCatalog.module.css";
 
@@ -24,80 +23,81 @@ type Movie = {
 export function MovieCatalog() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
-  const [sortBy, setSortBy] = useState("");
+  const [total, setTotal] = useState(0);
   const genres = useGenre();
-  const getDate = (item: any) =>
-    item.release_date || item.first_air_date || "1900-01-01";
+  const [sort, setSort] = useState({
+    field: "popularity",
+    direction: "desc",
+  });
+
+  const toggleSort = (field: string) => {
+    const newDirection =
+      sort.field === field && sort.direction === "desc" ? "asc" : "desc";
+    const updated = { field, direction: newDirection };
+    setSort(updated);
+    fetchData(field, newDirection);
+  };
+
+  const fetchData = async (field = sort.field, dir = sort.direction) => {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/discover/movie?page=${page}&api_key=3a1ca9b3f541f933ecd4468611a1334e&sort_by=${field}.${dir}`
+    );
+    const json = await response.json();
+    setData(json.results);
+    setTotal(json.total_results);
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/trending/all/week?page=${page}&api_key=3a1ca9b3f541f933ecd4468611a1334e`
-      );
-      const json = await response.json();
-      setData(json.results);
-      console.log(json.results);
-    };
     fetchData();
   }, [page]);
-
-  useEffect(() => {
-    const sorted = [...data];
-
-    switch (sortBy) {
-      case "rating":
-        sorted.sort((a, b) => b.vote_average - a.vote_average);
-        break;
-
-      case "date":
-        sorted.sort(
-          (a, b) =>
-            new Date(getDate(b)).getTime() - new Date(getDate(a)).getTime()
-        );
-        break;
-
-      case "title":
-        sorted.sort((a, b) =>
-          (a.title || a.original_name || "").localeCompare(
-            b.title || b.original_name || ""
-          )
-        );
-        break;
-
-      case "popularity":
-      default:
-        sorted.sort((a, b) => b.popularity - a.popularity);
-        break;
-    }
-
-    setData(sorted);
-  }, [sortBy]);
 
   return (
     <div className={styles.container}>
       <div className={styles.movies}>
-        <h2 className={styles.title}>All Films (10 000)</h2>
-        <div className={styles.sortBox}>
-          <select
-            className={styles.sortSelect}
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
+        <h2 className={styles.title}>All Films ({total})</h2>
+        <div className={styles.sortButtons}>
+          <button
+            className={styles.sortBtn}
+            onClick={() => toggleSort("popularity")}
           >
-            <option value="" disabled hidden>
-              Sort by...
-            </option>
-            <option value="popularity">Popularity</option>
-            <option value="rating">Rating</option>
-            <option value="date">Release Date</option>
-            <option value="title">Title</option>
-          </select>
+            Popularity{" "}
+            {sort.field === "popularity"
+              ? sort.direction === "desc"
+                ? "↓"
+                : "↑"
+              : ""}
+          </button>
+
+          <button
+            className={styles.sortBtn}
+            onClick={() => toggleSort("vote_average")}
+          >
+            Rating{" "}
+            {sort.field === "vote_average"
+              ? sort.direction === "desc"
+                ? "↓"
+                : "↑"
+              : ""}
+          </button>
+
+          <button
+            className={styles.sortBtn}
+            onClick={() => toggleSort("release_date")}
+          >
+            Release Date{" "}
+            {sort.field === "release_date"
+              ? sort.direction === "desc"
+                ? "↓"
+                : "↑"
+              : ""}
+          </button>
         </div>
         {data.map((item) => (
           <div className={styles.movie} key={item.id}>
             <img
               className={styles.poster}
               src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt=""
+              alt="no photo "
             />
 
             <div className={styles.movieDetails}>
