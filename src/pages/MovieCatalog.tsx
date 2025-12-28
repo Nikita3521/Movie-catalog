@@ -24,7 +24,8 @@ export function MovieCatalog() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
   const [total, setTotal] = useState(0);
-  const [selectedGenre, setSelectedGenre] = useState<number | null>(null);
+  const [query, setQuery] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState<number | "">("");
   const genres = useGenre();
   const [sort, setSort] = useState({
     field: "popularity",
@@ -39,29 +40,50 @@ export function MovieCatalog() {
     fetchData(field, newDirection);
   };
 
+  const genreParam =
+    selectedGenre !== "" ? `&with_genres=${selectedGenre}` : "";
+
   const fetchData = async (
     field = sort.field,
     dir = sort.direction,
-    genre = selectedGenre
+    genresList = selectedGenre,
+    search = query
   ) => {
-    const response = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?page=${page}&api_key=3a1ca9b3f541f933ecd4468611a1334e&sort_by=${field}.${dir}${
-        genre ? `&with_genres=${genre}` : ""
-      }`
-    );
+    let url = "";
+
+    if (search.trim().length > 0) {
+      url = `https://api.themoviedb.org/3/search/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&query=${encodeURIComponent(
+        search
+      )}&page=${page}&sort_by=${field}.${dir}${genreParam}`;
+    } else {
+      url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}${genreParam}`;
+    }
+
+    const response = await fetch(url);
     const json = await response.json();
+
     setData(json.results ?? []);
-    setTotal(json.total_results);
+    setTotal(json.total_results ?? 0);
   };
 
   useEffect(() => {
     fetchData();
-  }, [page, selectedGenre, sort]);
+  }, [page, selectedGenre, sort, query]);
 
   return (
     <div className={styles.container}>
       <div className={styles.movies}>
         <h2 className={styles.title}>All Films ({total})</h2>
+        <input
+          className={styles.searchInput}
+          type="text"
+          placeholder="Search films..."
+          value={query}
+          onChange={(e) => {
+            setPage(1); // При поиске возвращаемся на первую страницу
+            setQuery(e.target.value);
+          }}
+        />
         <div className={styles.sortButtons}>
           <select
             className={styles.sortSelect}
