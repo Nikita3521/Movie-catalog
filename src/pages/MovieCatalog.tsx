@@ -26,6 +26,7 @@ export function MovieCatalog() {
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | "">("");
+  const isSearching = query.trim() !== "";
   const genres = useGenre();
   const [sort, setSort] = useState({
     field: "popularity",
@@ -64,6 +65,7 @@ export function MovieCatalog() {
 
     setData(json.results ?? []);
     setTotal(json.total_results ?? 0);
+    console.log(json.results);
   };
 
   useEffect(() => {
@@ -80,12 +82,13 @@ export function MovieCatalog() {
           placeholder="Search films..."
           value={query}
           onChange={(e) => {
-            setPage(1); // При поиске возвращаемся на первую страницу
+            setPage(1);
             setQuery(e.target.value);
           }}
         />
         <div className={styles.sortButtons}>
           <select
+            disabled={isSearching}
             className={styles.sortSelect}
             value={selectedGenre || ""}
             onChange={(e) => setSelectedGenre(Number(e.target.value))}
@@ -99,6 +102,7 @@ export function MovieCatalog() {
             ))}
           </select>
           <button
+            disabled={isSearching}
             className={styles.sortBtn}
             onClick={() => toggleSort("popularity")}
           >
@@ -111,6 +115,7 @@ export function MovieCatalog() {
           </button>
 
           <button
+            disabled={isSearching}
             className={styles.sortBtn}
             onClick={() => toggleSort("vote_average")}
           >
@@ -123,6 +128,7 @@ export function MovieCatalog() {
           </button>
 
           <button
+            disabled={isSearching}
             className={styles.sortBtn}
             onClick={() => toggleSort("release_date")}
           >

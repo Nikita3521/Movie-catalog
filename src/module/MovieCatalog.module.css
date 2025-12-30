@@ -232,13 +232,11 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.06);
 }
 
-/* При фокусе */
 .searchInput:focus {
     border-color: #4a7dff;
     box-shadow: 0 0 6px rgba(74, 125, 255, 0.4);
 }
 
-/* Placeholder стиль */
 .searchInput::placeholder {
     color: #999;
     transition: 0.2s;
@@ -248,7 +246,6 @@
     color: #ccc;
 }
 
-/* Если тёмная тема системы */
 @media (prefers-color-scheme: dark) {
     .searchInput {
         background: #1e1e1e;
@@ -264,4 +261,10 @@
     .searchInput::placeholder {
         color: #777;
     }
+}
+
+.sortBtn:disabled,
+.sortSelect:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
