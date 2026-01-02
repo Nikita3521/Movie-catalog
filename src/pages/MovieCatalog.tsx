@@ -3,6 +3,7 @@ import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
 import { useGenre } from "../context/GenreContext";
 import styles from "../module/MovieCatalog.module.css";
+import { Link } from "react-router-dom";
 
 type Movie = {
   backdrop_path: string;
@@ -169,7 +170,9 @@ export function MovieCatalog() {
               <p className={styles.overview}>{item.overview}</p>
 
               <div className={styles.movieButtons}>
-                <button className={styles.btnWhite}>VIEW DETAILS</button>
+                <Link to={`/movie/${item.id}`}>
+                  <button className={styles.btnWhite}>VIEW DETAILS</button>
+                </Link>
                 <button className={styles.btnDark}>ADD TO WATCHLISTS</button>
               </div>
             </div>
