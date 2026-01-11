@@ -22,42 +22,96 @@ export function ViewDetails() {
 
   return (
     <>
+      <div
+        className={styles.background}
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${data.backdrop_path})`,
+        }}
+      />
       <div className={styles.container}>
-        <img
-          style={{ height: "400px", width: "275px" }}
-          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-          alt=""
-        />
         <div className={styles.content}>
-          <ul style={{ display: "flex", gap: "7px" }}>
-            {data?.genres?.map((e) => (
-              <li key={e.id} className={styles.genres}>
-                {e.name}
-              </li>
-            ))}
-          </ul>
-          <h1 style={{ color: "white", fontSize: "34px", fontWeight: "600" }}>
-            {data.title}
-          </h1>
-          <div className={styles.rating}>
-            <img src={logo} alt="" />
-            {data.vote_average?.toFixed(1)}
-            <img src={star} alt="" />
-          </div>
-          <p className={styles.overview}>{data.overview}</p>
-          <div>
-            <ul className={styles.company}>
-              {data?.production_companies?.map((e) => (
-                <li>
-                  <img
-                    style={{ height: "40px", width: "40px" }}
-                    src={`https://image.tmdb.org/t/p/w500${e.logo_path}`}
-                    alt=""
-                  />
-                  {e.name}
-                </li>
-              ))}
-            </ul>
+          <img
+            style={{
+              maxHeight: "600px",
+              maxWidth: "400px",
+              borderRadius: "15px",
+            }}
+            src={`https://image.tmdb.org/t/p/original${data.poster_path}`}
+            alt=""
+          />
+          <div className={styles.description}>
+            <h1
+              style={{
+                display: "flex",
+                color: "white",
+                fontSize: "34px",
+                fontWeight: "600",
+                gap: "15px",
+                alignItems: "center",
+              }}
+            >
+              {data.title}
+              <div className={styles.rating}>
+                <img src={logo} alt="" />
+                {data.vote_average?.toFixed(1)}
+                <img src={star} alt="" />
+              </div>
+            </h1>
+            {data.overview && (
+              <p className={styles.overview}>{data.overview}</p>
+            )}
+
+            {data.genres?.length > 1 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  lineHeight: "1.5",
+                }}
+              >
+                <h5 style={{ fontSize: "14px" }}>Genres:</h5>
+                <p style={{ fontSize: "16px" }}>
+                  {data?.genres?.map((g) => g.name).join(", ")}.
+                </p>
+              </div>
+            )}
+
+            {data.runtime != 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  lineHeight: "1.5",
+                }}
+              >
+                <h5 style={{ fontSize: "14px" }}>Run time</h5>
+                <p style={{ fontSize: "16px" }}>{data.runtime} min</p>
+              </div>
+            )}
+
+            {data.release_date && (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  lineHeight: "1.5",
+                }}
+              >
+                <h5 style={{ fontSize: "14px" }}>Release Date</h5>
+                <p style={{ fontSize: "16px" }}>{data.release_date}</p>
+              </div>
+            )}
+
+            {data.homepage && (
+              <a
+                href={data.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.homeBtn}
+              >
+                Home page
+              </a>
+            )}
           </div>
         </div>
       </div>

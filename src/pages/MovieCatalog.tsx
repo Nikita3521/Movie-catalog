@@ -56,9 +56,9 @@ export function MovieCatalog() {
     if (search.trim().length > 0) {
       url = `https://api.themoviedb.org/3/search/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&query=${encodeURIComponent(
         search
-      )}&page=${page}&sort_by=${field}.${dir}${genreParam}`;
+      )}&page=${page}&sort_by=${field}.${dir}${genreParam}&vote_count.gte=50&include_adult=false`;
     } else {
-      url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}${genreParam}`;
+      url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}${genreParam}&vote_count.gte=50&include_adult=false`;
     }
 
     const response = await fetch(url);
@@ -91,8 +91,12 @@ export function MovieCatalog() {
           <select
             disabled={isSearching}
             className={styles.sortSelect}
-            value={selectedGenre || ""}
-            onChange={(e) => setSelectedGenre(Number(e.target.value))}
+            value={selectedGenre}
+            onChange={(e) => {
+              const v = e.target.value;
+              setPage(1);
+              setSelectedGenre(v === "" ? "" : Number(v));
+            }}
           >
             <option value="">All genres</option>
 
@@ -154,7 +158,7 @@ export function MovieCatalog() {
                 {item.title || item.original_name}
               </h5>
               <ul className={styles.genreList}>
-                {item.genre_ids.map((e) => (
+                {(item.genre_ids ?? []).map((e) => (
                   <li className={styles.genreItem} key={`${item.id}-${e}`}>
                     {genres.get(e)}
                   </li>
@@ -163,7 +167,9 @@ export function MovieCatalog() {
 
               <div className={styles.rating}>
                 <img src={logo} alt="" />
-                {item.vote_average.toFixed(1)}
+                {item.vote_average > 1
+                  ? item.vote_average.toFixed(1)
+                  : item.vote_average}
                 <img src={star} alt="" />
               </div>
 
