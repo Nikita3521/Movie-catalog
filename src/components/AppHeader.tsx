@@ -30,7 +30,7 @@ export function AppHeader() {
     fontSize: "14px",
     fontWeight: "600",
     backgroundColor: "orange",
-    padding: "10px 14px",
+    padding: "10px 18px",
     borderRadius: "15px",
   };
   const GeneralNameStyle = {
@@ -54,7 +54,9 @@ export function AppHeader() {
                   alt="MovieSPACE"
                   style={{ height: "24px", width: "24px" }}
                 />
-                MovieSPACE
+                <span style={{ letterSpacing: "1.25px", fontSize: "16px" }}>
+                  MovieSPACE
+                </span>
               </Link>
             </div>
             <div className="list-routes" style={ListStyle}>
@@ -66,13 +68,13 @@ export function AppHeader() {
               </Link>
 
               <Link
-                to="/Watchlists"
+                to="/watchlists"
                 style={{ color: "white", fontSize: "14px", fontWeight: "600" }}
               >
                 Watchlists
               </Link>
 
-              <Link to="/Login" style={LoginStyle}>
+              <Link to="/login" style={LoginStyle}>
                 Login
               </Link>
             </div>

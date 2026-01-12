@@ -3,6 +3,7 @@ import { MovieCatalog } from "../pages/MovieCatalog";
 import { Watchlists } from "../pages/Watchlists";
 import { Login } from "../pages/Login";
 import { ViewDetails } from "../pages/ViewDetails";
+import { Register } from "../pages/Register";
 
 export function PageRoutes() {
   return (
@@ -11,6 +12,7 @@ export function PageRoutes() {
       <Route path="/watchlists" element={<Watchlists />} />
       <Route path="/login" element={<Login />} />
       <Route path="/movie/:id" element={<ViewDetails />} />
+      <Route path="/register" element={<Register />} />
     </Routes>
   );
 }

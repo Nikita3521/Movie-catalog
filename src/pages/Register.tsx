@@ -2,7 +2,7 @@ import styles from "../module/Login.module.css";
 import Logo from "../img/AppHeaderImg/Vector.png";
 import { Link } from "react-router-dom";
 
-export function Login() {
+export function Register() {
   return (
     <>
       <div className={styles.container}>
@@ -27,15 +27,23 @@ export function Login() {
               gap: "35px",
               alignItems: "center",
             }}
-            action="#"
+            action=""
             method="POST"
           >
             <input
               className={styles.input_auth}
-              placeholder="Email or username"
+              placeholder="Email"
+              type="email"
+              id="email"
+              name="email_input"
+              required
+            />
+            <input
+              className={styles.input_auth}
+              placeholder="Username"
               type="text"
-              id="text"
-              name="text_input"
+              id="user"
+              name="user_input"
               required
             />
             <input
@@ -48,21 +56,8 @@ export function Login() {
             />
 
             <button className={styles.button_submit} type="submit">
-              Login
+              Registration
             </button>
-            <p style={{ color: "orange" }}>
-              NEW USER?{" "}
-              <Link
-                style={{
-                  color: "orange",
-                  fontWeight: "600",
-                  textDecoration: "underline",
-                }}
-                to="/Register"
-              >
-                REGISTER HERE
-              </Link>
-            </p>
           </form>
         </div>
       </div>
