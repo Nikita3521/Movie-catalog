@@ -1,0 +1,191 @@
+.header {
+    background-color: #202020;
+    height: 68px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border-bottom: 3px solid orange;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 1080px;
+    width: 100%;
+    padding: 0 16px;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logoWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.logoLink {
+    font-size: 14px;
+    color: orange;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.logoLink:hover {
+    opacity: 0.85;
+}
+
+.logoText {
+    letter-spacing: 1.25px;
+    font-size: 16px;
+}
+
+.logoImage {
+    height: 24px;
+    width: 24px;
+}
+
+.navList {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.navLink {
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.navLink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0;
+    height: 2px;
+    background-color: orange;
+    transition: width 0.25s ease;
+}
+
+.navLink:hover {
+    color: orange;
+}
+
+.navLink:hover::after {
+    width: 100%;
+}
+
+.loginButton {
+    color: black;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: orange;
+    padding: 10px 18px;
+    border-radius: 15px;
+    text-decoration: none;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.loginButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(255, 165, 0, 0.35);
+    opacity: 0.95;
+}
+
+@media (max-width: 768px) {
+    .navList {
+        gap: 24px;
+    }
+
+    .logoText {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .navList {
+        width: 100%;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .navLink {
+        font-size: 13px;
+    }
+
+    .loginButton {
+        padding: 8px 14px;
+        font-size: 13px;
+    }
+}
+
+.burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.burger span {
+    width: 22px;
+    height: 2px;
+    background-color: white;
+    transition: all 0.3s ease;
+}
+
+/* Burger animation */
+.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media (max-width: 480px) {
+    .burger {
+        display: flex;
+    }
+
+    .navList {
+        position: absolute;
+        top: 0px;
+        left: 0;
+        width: 100%;
+        background-color: #202020;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 0;
+
+        transform: translateY(-120%);
+        transition: transform 0.3s ease;
+    }
+
+    .navListOpen {
+        transform: translateY(50%);
+    }
+}

@@ -27,8 +27,6 @@ export function Login() {
               gap: "35px",
               alignItems: "center",
             }}
-            action="#"
-            method="POST"
           >
             <input
               className={styles.input_auth}

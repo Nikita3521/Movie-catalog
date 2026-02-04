@@ -1,86 +1,67 @@
-import { Link, Route, Routes } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 import Logo from "../img/AppHeaderImg/Vector.png";
+import styles from "../module/AppHeader.module.css";
 
-export function AppHeader() {
-  const ContainerStyle = {
-    margin: "0 auto",
-    maxWidth: "1080px",
-    width: "100%",
+export const AppHeader: React.FC = () => {
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
+
+  const toggleMenu = (): void => {
+    setMenuOpen((prev) => !prev);
   };
-  const HeaderStyle = {
-    backgroundColor: "#202020",
-    height: "68px",
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    borderBottom: "3px solid orange",
-  };
-  const ContentStyle = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  };
-  const ListStyle = {
-    display: "flex",
-    alignItems: "center",
-    gap: "40px",
-  };
-  const LoginStyle = {
-    color: "black",
-    fontSize: "14px",
-    fontWeight: "600",
-    backgroundColor: "orange",
-    padding: "10px 18px",
-    borderRadius: "15px",
-  };
-  const GeneralNameStyle = {
-    fontSize: "14px",
-    color: "orange",
-    fontWeight: "600",
-    display: "flex",
-    alignItems: "center",
-    gap: "5px",
+
+  const closeMenu = (): void => {
+    setMenuOpen(false);
   };
 
   return (
-    <>
-      <div className="header" style={HeaderStyle}>
-        <div className="container" style={ContainerStyle}>
-          <div className="content" style={ContentStyle}>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Link style={GeneralNameStyle} to="/">
-                <img
-                  src={Logo}
-                  alt="MovieSPACE"
-                  style={{ height: "24px", width: "24px" }}
-                />
-                <span style={{ letterSpacing: "1.25px", fontSize: "16px" }}>
-                  MovieSPACE
-                </span>
-              </Link>
-            </div>
-            <div className="list-routes" style={ListStyle}>
-              <Link
-                to="/"
-                style={{ color: "white", fontSize: "14px", fontWeight: "600" }}
-              >
-                AllFilms
-              </Link>
-
-              <Link
-                to="/watchlists"
-                style={{ color: "white", fontSize: "14px", fontWeight: "600" }}
-              >
-                Watchlists
-              </Link>
-
-              <Link to="/login" style={LoginStyle}>
-                Login
-              </Link>
-            </div>
+    <header className={styles.header}>
+      <div className={styles.container}>
+        <div className={styles.content}>
+          <div className={styles.logoWrapper}>
+            <Link to="/" className={styles.logoLink} onClick={closeMenu}>
+              <img src={Logo} alt="MovieSPACE" className={styles.logoImage} />
+              <span className={styles.logoText}>MovieSPACE</span>
+            </Link>
           </div>
+
+          <button
+            className={`${styles.burger} ${menuOpen ? styles.active : ""}`}
+            onClick={toggleMenu}
+            aria-label="Open menu"
+          >
+            <span />
+            <span />
+            <span />
+          </button>
+
+          <nav
+            className={`${styles.navList} ${
+              menuOpen ? styles.navListOpen : ""
+            }`}
+          >
+            <Link to="/" className={styles.navLink} onClick={closeMenu}>
+              AllFilms
+            </Link>
+
+            <Link
+              to="/watchlists"
+              className={styles.navLink}
+              onClick={closeMenu}
+            >
+              Watchlists
+            </Link>
+
+            <Link
+              to="/login"
+              className={styles.loginButton}
+              onClick={closeMenu}
+            >
+              Login
+            </Link>
+          </nav>
         </div>
       </div>
-    </>
+    </header>
   );
-}
+};

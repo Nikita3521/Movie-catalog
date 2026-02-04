@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
 import { useGenre } from "../context/GenreContext";
@@ -22,6 +22,8 @@ type Movie = {
 };
 
 export function MovieCatalog() {
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
   const [total, setTotal] = useState(0);
@@ -39,7 +41,6 @@ export function MovieCatalog() {
       sort.field === field && sort.direction === "desc" ? "asc" : "desc";
     const updated = { field, direction: newDirection };
     setSort(updated);
-    fetchData(field, newDirection);
   };
 
   const genreParam =
@@ -49,29 +50,51 @@ export function MovieCatalog() {
     field = sort.field,
     dir = sort.direction,
     genresList = selectedGenre,
-    search = query
+    search = query,
   ) => {
-    let url = "";
+    try {
+      setLoading(true);
 
-    if (search.trim().length > 0) {
-      url = `https://api.themoviedb.org/3/search/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&query=${encodeURIComponent(
-        search
-      )}&page=${page}&sort_by=${field}.${dir}${genreParam}&vote_count.gte=50&include_adult=false`;
-    } else {
-      url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}${genreParam}&vote_count.gte=50&include_adult=false`;
+      let url = "";
+
+      if (search.trim().length > 0) {
+        url = `https://api.themoviedb.org/3/search/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&query=${encodeURIComponent(
+          search,
+        )}&page=${page}&sort_by=${field}.${dir}&vote_count.gte=50&include_adult=false`;
+      } else {
+        url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}&vote_count.gte=50&include_adult=false${
+          selectedGenre !== "" ? `&with_genres=${selectedGenre}` : ""
+        }`;
+      }
+
+      const response = await fetch(url);
+      const json = await response.json();
+      setLoading(false);
+
+      setData(json.results ?? []);
+      setTotal(json.total_results ?? 0);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
     }
-
-    const response = await fetch(url);
-    const json = await response.json();
-
-    setData(json.results ?? []);
-    setTotal(json.total_results ?? 0);
-    console.log(json.results);
   };
 
   useEffect(() => {
-    fetchData();
-  }, [page, selectedGenre, sort, query]);
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+    }
+
+    searchTimeout.current = setTimeout(() => {
+      fetchData();
+    }, 500);
+
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
+  }, [query, selectedGenre, sort, page]);
 
   return (
     <div className={styles.container}>
@@ -145,45 +168,49 @@ export function MovieCatalog() {
               : ""}
           </button>
         </div>
-        {data.map((item) => (
-          <div className={styles.movie} key={item.id}>
-            <img
-              className={styles.poster}
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt="no photo "
-            />
+        {loading ? (
+          <div className={styles.loader} />
+        ) : (
+          data.map((item) => (
+            <div className={styles.movie} key={item.id}>
+              <img
+                className={styles.poster}
+                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                alt="no photo "
+              />
 
-            <div className={styles.movieDetails}>
-              <h5 className={styles.movieName}>
-                {item.title || item.original_name}
-              </h5>
-              <ul className={styles.genreList}>
-                {(item.genre_ids ?? []).map((e) => (
-                  <li className={styles.genreItem} key={`${item.id}-${e}`}>
-                    {genres.get(e)}
-                  </li>
-                ))}
-              </ul>
+              <div className={styles.movieDetails}>
+                <h5 className={styles.movieName}>
+                  {item.title || item.original_name}
+                </h5>
+                <ul className={styles.genreList}>
+                  {(item.genre_ids ?? []).map((e) => (
+                    <li className={styles.genreItem} key={`${item.id}-${e}`}>
+                      {genres.get(e)}
+                    </li>
+                  ))}
+                </ul>
 
-              <div className={styles.rating}>
-                <img src={logo} alt="" />
-                {item.vote_average > 1
-                  ? item.vote_average.toFixed(1)
-                  : item.vote_average}
-                <img src={star} alt="" />
-              </div>
+                <div className={styles.rating}>
+                  <img src={logo} alt="" />
+                  {item.vote_average > 1
+                    ? item.vote_average.toFixed(1)
+                    : item.vote_average}
+                  <img src={star} alt="" />
+                </div>
 
-              <p className={styles.overview}>{item.overview}</p>
+                <p className={styles.overview}>{item.overview}</p>
 
-              <div className={styles.movieButtons}>
-                <Link to={`/movie/${item.id}`}>
-                  <button className={styles.btnWhite}>VIEW DETAILS</button>
-                </Link>
-                <button className={styles.btnDark}>ADD TO WATCHLISTS</button>
+                <div className={styles.movieButtons}>
+                  <Link to={`/movie/${item.id}`}>
+                    <button className={styles.btnWhite}>VIEW DETAILS</button>
+                  </Link>
+                  <button className={styles.btnDark}>ADD TO WATCHLISTS</button>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
 
         <div className={styles.pagination}>
           <button
