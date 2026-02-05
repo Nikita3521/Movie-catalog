@@ -4,20 +4,40 @@ import { useParams } from "react-router-dom";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
 
+type Genre = {
+  id: number;
+  name: string;
+};
+
+type MovieDetails = {
+  backdrop_path?: string;
+  poster_path?: string;
+  title?: string;
+  vote_average?: number;
+  overview?: string;
+  genres?: Genre[];
+  runtime?: number;
+  release_date?: string;
+  homepage?: string;
+};
+
 export function ViewDetails() {
-  const { id } = useParams();
-  const [data, setData] = useState([]);
+  const { id } = useParams<{ id: string }>();
+  const [data, setData] = useState<MovieDetails>({});
 
   useEffect(() => {
     const fetchData = async () => {
       const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en-US`
+        `https://api.themoviedb.org/3/movie/${id}?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en-US`,
       );
-      const json = await response.json();
+      const json: MovieDetails = await response.json();
       setData(json);
       console.log(json);
     };
-    fetchData();
+
+    if (id) {
+      fetchData();
+    }
   }, [id]);
 
   return (
@@ -31,25 +51,12 @@ export function ViewDetails() {
       <div className={styles.container}>
         <div className={styles.content}>
           <img
-            style={{
-              maxHeight: "600px",
-              maxWidth: "400px",
-              borderRadius: "15px",
-            }}
+            className={styles.poster}
             src={`https://image.tmdb.org/t/p/original${data.poster_path}`}
             alt=""
           />
           <div className={styles.description}>
-            <h1
-              style={{
-                display: "flex",
-                color: "white",
-                fontSize: "34px",
-                fontWeight: "600",
-                gap: "15px",
-                alignItems: "center",
-              }}
-            >
+            <h1 className={styles.title}>
               {data.title}
               <div className={styles.rating}>
                 <img src={logo} alt="" />
@@ -57,11 +64,12 @@ export function ViewDetails() {
                 <img src={star} alt="" />
               </div>
             </h1>
+
             {data.overview && (
               <p className={styles.overview}>{data.overview}</p>
             )}
 
-            {data.genres?.length > 1 && (
+            {data.genres && data.genres.length > 1 && (
               <div
                 style={{
                   display: "flex",
@@ -71,7 +79,7 @@ export function ViewDetails() {
               >
                 <h5 style={{ fontSize: "14px" }}>Genres:</h5>
                 <p style={{ fontSize: "16px" }}>
-                  {data?.genres?.map((g) => g.name).join(", ")}.
+                  {data.genres.map((g) => g.name).join(", ")}.
                 </p>
               </div>
             )}
