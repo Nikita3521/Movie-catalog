@@ -24,21 +24,36 @@ type MovieDetails = {
 export function ViewDetails() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<MovieDetails>({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/movie/${id}?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en-US`,
-      );
-      const json: MovieDetails = await response.json();
-      setData(json);
-      console.log(json);
+      try {
+        setLoading(true);
+        const response = await fetch(
+          `https://api.themoviedb.org/3/movie/${id}?api_key=3a1ca9b3f541f933ecd4468611a1334e&language=en-US`,
+        );
+        const json: MovieDetails = await response.json();
+        setData(json);
+      } catch (error) {
+        console.error("Failed to fetch movie details", error);
+      } finally {
+        setLoading(false);
+      }
     };
 
     if (id) {
       fetchData();
     }
   }, [id]);
+
+  if (loading) {
+    return (
+      <div className={styles.loaderWrapper}>
+        <div className={styles.loader}></div>
+      </div>
+    );
+  }
 
   return (
     <>

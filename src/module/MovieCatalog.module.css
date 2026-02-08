@@ -470,7 +470,7 @@ html {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 16px;
+        gap: 20px;
         padding: 16px 10px;
     }
 
@@ -479,8 +479,8 @@ html {
         flex-direction: column;
         align-items: center;
         gap: 12px;
-        padding: 10px 0;
-        border-bottom: 1px solid #333;
+        padding: 0px 0px 20px 0px;
+        border-bottom: 1px solid #535353;
         width: auto;
     }
 
@@ -527,4 +527,11 @@ html {
         box-sizing: border-box;
         text-align: center;
     }
+}
+
+.loaderWrapper {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

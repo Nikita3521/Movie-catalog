@@ -69,7 +69,6 @@ export function MovieCatalog() {
 
       const response = await fetch(url);
       const json = await response.json();
-      setLoading(false);
 
       setData(json.results ?? []);
       setTotal(json.total_results ?? 0);
@@ -95,6 +94,14 @@ export function MovieCatalog() {
       }
     };
   }, [query, selectedGenre, sort, page]);
+
+  if (loading) {
+    return (
+      <div className={styles.loaderWrapper}>
+        <div className={styles.loader} />
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -168,49 +175,46 @@ export function MovieCatalog() {
               : ""}
           </button>
         </div>
-        {loading ? (
-          <div className={styles.loader} />
-        ) : (
-          data.map((item) => (
-            <div className={styles.movie} key={item.id}>
-              <img
-                className={styles.poster}
-                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt="no photo "
-              />
 
-              <div className={styles.movieDetails}>
-                <h5 className={styles.movieName}>
-                  {item.title || item.original_name}
-                </h5>
-                <ul className={styles.genreList}>
-                  {(item.genre_ids ?? []).map((e) => (
-                    <li className={styles.genreItem} key={`${item.id}-${e}`}>
-                      {genres.get(e)}
-                    </li>
-                  ))}
-                </ul>
+        {data.map((item) => (
+          <div className={styles.movie} key={item.id}>
+            <img
+              className={styles.poster}
+              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+              alt="no photo "
+            />
 
-                <div className={styles.rating}>
-                  <img src={logo} alt="" />
-                  {item.vote_average > 1
-                    ? item.vote_average.toFixed(1)
-                    : item.vote_average}
-                  <img src={star} alt="" />
-                </div>
+            <div className={styles.movieDetails}>
+              <h5 className={styles.movieName}>
+                {item.title || item.original_name}
+              </h5>
+              <ul className={styles.genreList}>
+                {(item.genre_ids ?? []).map((e) => (
+                  <li className={styles.genreItem} key={`${item.id}-${e}`}>
+                    {genres.get(e)}
+                  </li>
+                ))}
+              </ul>
 
-                <p className={styles.overview}>{item.overview}</p>
+              <div className={styles.rating}>
+                <img src={logo} alt="" />
+                {item.vote_average > 1
+                  ? item.vote_average.toFixed(1)
+                  : item.vote_average}
+                <img src={star} alt="" />
+              </div>
 
-                <div className={styles.movieButtons}>
-                  <Link to={`/movie/${item.id}`}>
-                    <button className={styles.btnWhite}>VIEW DETAILS</button>
-                  </Link>
-                  <button className={styles.btnDark}>ADD TO WATCHLISTS</button>
-                </div>
+              <p className={styles.overview}>{item.overview}</p>
+
+              <div className={styles.movieButtons}>
+                <Link to={`/movie/${item.id}`}>
+                  <button className={styles.btnWhite}>VIEW DETAILS</button>
+                </Link>
+                <button className={styles.btnDark}>ADD TO WATCHLISTS</button>
               </div>
             </div>
-          ))
-        )}
+          </div>
+        ))}
 
         <div className={styles.pagination}>
           <button
