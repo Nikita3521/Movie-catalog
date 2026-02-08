@@ -116,7 +116,7 @@
 
 @media (max-width: 480px) {
     .content {
-        flex-direction: column;
+        flex-direction: row-reverse;
         gap: 12px;
     }
 
