@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import Logo from "../img/AppHeaderImg/Vector.png";
 import styles from "../module/AppHeader.module.css";
+import { useAuth } from "../context/AuthContext";
 
 export const AppHeader: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
@@ -13,6 +14,8 @@ export const AppHeader: React.FC = () => {
   const closeMenu = (): void => {
     setMenuOpen(false);
   };
+
+  const { isAuth } = useAuth();
 
   return (
     <header className={styles.header}>
@@ -54,13 +57,20 @@ export const AppHeader: React.FC = () => {
             >
               Watchlists
             </Link>
-
+            {isAuth}
             <Link
               to="/login"
               className={styles.loginButton}
               onClick={closeMenu}
             >
-              Login
+              Sigh in
+            </Link>
+            <Link
+              to="/register"
+              className={styles.loginButton}
+              onClick={closeMenu}
+            >
+              Sign up
             </Link>
           </nav>
         </div>

@@ -9,11 +9,12 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  isAuth: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const API_URL = "http://localhost:5000"; // потом вынесешь в .env фронта
+const API_URL = "http://localhost:5000";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() =>
@@ -21,6 +22,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const isAuth = !!user;
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -43,7 +46,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (!res.ok) throw new Error("Unauthorized");
 
         const me = await res.json();
-        // твой бек /me может возвращать { _id, email } — подстрахуемся:
         setUser({ id: me.id ?? me._id, email: me.email });
       } catch {
         logout();
@@ -70,7 +72,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     localStorage.setItem("token", data.token);
     setToken(data.token);
-    setUser(data.user); // {id,email} с бека
+    setUser(data.user);
   };
 
   const register = async (email: string, password: string) => {
@@ -88,12 +90,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     localStorage.setItem("token", data.token);
     setToken(data.token);
-    setUser(data.user); // {id,email} с бека
+    setUser(data.user);
   };
 
   const value = useMemo(
-    () => ({ user, token, isLoading, login, logout, register }),
-    [user, token, isLoading],
+    () => ({ user, token, isLoading, login, logout, register, isAuth }),
+    [user, token, isLoading, isAuth],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

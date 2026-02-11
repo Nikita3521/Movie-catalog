@@ -1,5 +1,5 @@
 import { FormEvent, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styles from "../module/Login.module.css";
 import Logo from "../img/AppHeaderImg/Vector.png";
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +21,7 @@ export function Register() {
 
     try {
       await register(email, password);
-      navigate("/"); // или куда ты хочешь после логина
+      navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Register error");
     } finally {
