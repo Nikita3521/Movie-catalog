@@ -24,7 +24,7 @@ type MovieDetails = {
 export function ViewDetails() {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<MovieDetails>({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {

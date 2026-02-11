@@ -23,7 +23,7 @@ type Movie = {
 
 export function MovieCatalog() {
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
   const [total, setTotal] = useState(0);
@@ -86,7 +86,7 @@ export function MovieCatalog() {
 
     searchTimeout.current = setTimeout(() => {
       fetchData();
-    }, 500);
+    }, 800);
 
     return () => {
       if (searchTimeout.current) {

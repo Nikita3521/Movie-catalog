@@ -1,3 +1,5 @@
+/* ================= HEADER ================= */
+
 .header {
     background-color: #202020;
     height: 68px;
@@ -6,7 +8,11 @@
     align-items: center;
     border-bottom: 3px solid orange;
     position: sticky;
+    top: 0;
+    z-index: 50;
 }
+
+/* ================= CONTAINER ================= */
 
 .container {
     margin: 0 auto;
@@ -20,6 +26,8 @@
     justify-content: space-between;
     align-items: center;
 }
+
+/* ================= LOGO ================= */
 
 .logoWrapper {
     display: flex;
@@ -50,6 +58,8 @@
     height: 24px;
     width: 24px;
 }
+
+/* ================= NAV ================= */
 
 .navList {
     display: flex;
@@ -85,6 +95,8 @@
     width: 100%;
 }
 
+/* ================= LOGIN BUTTON ================= */
+
 .loginButton {
     color: black;
     font-size: 14px;
@@ -105,39 +117,7 @@
     opacity: 0.95;
 }
 
-@media (max-width: 768px) {
-    .navList {
-        gap: 24px;
-    }
-
-    .logoText {
-        font-size: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .content {
-        flex-direction: row-reverse;
-        gap: 12px;
-    }
-
-    .navList {
-        width: 100%;
-        justify-content: space-between;
-        gap: 12px;
-        z-index: 100;
-        border-bottom: 1px solid orange;
-    }
-
-    .navLink {
-        font-size: 13px;
-    }
-
-    .loginButton {
-        padding: 8px 14px;
-        font-size: 13px;
-    }
-}
+/* ================= BURGER ================= */
 
 .burger {
     display: none;
@@ -146,6 +126,8 @@
     background: none;
     border: none;
     cursor: pointer;
+    position: relative;
+    z-index: 200;
 }
 
 .burger span {
@@ -156,23 +138,44 @@
 }
 
 /* Burger animation */
-.active span:nth-child(1) {
+.burger.active span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
 }
 
-.active span:nth-child(2) {
+.burger.active span:nth-child(2) {
     opacity: 0;
 }
 
-.active span:nth-child(3) {
+.burger.active span:nth-child(3) {
     transform: rotate(-45deg) translate(5px, -5px);
 }
 
+/* ================= TABLET ================= */
+
+@media (max-width: 768px) {
+    .navList {
+        gap: 24px;
+    }
+
+    .logoText {
+        font-size: 15px;
+    }
+}
+
+/* ================= MOBILE ================= */
+
 @media (max-width: 480px) {
+    .content {
+        flex-direction: row-reverse;
+        gap: 12px;
+    }
+
+    /* Burger visible */
     .burger {
         display: flex;
     }
 
+    /* Mobile menu */
     .navList {
         position: absolute;
         top: 0px;
@@ -182,13 +185,24 @@
         flex-direction: column;
         align-items: center;
         gap: 20px;
-        padding: 20px 0;
+        padding: 24px 0;
+        border-bottom: 3px solid orange;
 
         transform: translateY(-120%);
         transition: transform 0.3s ease;
+        z-index: 100;
     }
 
     .navListOpen {
-        transform: translateY(50%);
+        transform: translateY(40%);
+    }
+
+    .navLink {
+        font-size: 14px;
+    }
+
+    .loginButton {
+        padding: 10px 18px;
+        font-size: 14px;
     }
 }
