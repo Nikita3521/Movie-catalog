@@ -106,11 +106,11 @@ export function MovieCatalog() {
   return (
     <div className={styles.container}>
       <div className={styles.movies}>
-        <h2 className={styles.title}>All Films ({total})</h2>
+        <h2 className={styles.title}>All Movies ({total})</h2>
         <input
           className={styles.searchInput}
           type="text"
-          placeholder="Search films..."
+          placeholder="Search movie..."
           value={query}
           onChange={(e) => {
             setPage(1);
@@ -197,7 +197,7 @@ export function MovieCatalog() {
               </ul>
 
               <div className={styles.rating}>
-                <img src={logo} alt="" />
+                <img src={logo} alt="" className={styles.star} />
                 {item.vote_average > 1
                   ? item.vote_average.toFixed(1)
                   : item.vote_average}

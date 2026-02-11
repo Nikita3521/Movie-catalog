@@ -28,7 +28,9 @@ export const AppHeader: React.FC = () => {
           <button
             className={`${styles.burger} ${menuOpen ? styles.active : ""}`}
             onClick={toggleMenu}
-            aria-label="Open menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
           >
             <span />
             <span />
@@ -36,6 +38,7 @@ export const AppHeader: React.FC = () => {
           </button>
 
           <nav
+            id="mobile-navigation"
             className={`${styles.navList} ${
               menuOpen ? styles.navListOpen : ""
             }`}

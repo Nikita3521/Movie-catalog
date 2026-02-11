@@ -1,11 +1,32 @@
-import { FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { FormEvent, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../module/Login.module.css";
 import Logo from "../img/AppHeaderImg/Vector.png";
+import { useAuth } from "../context/AuthContext";
 
 export function Login() {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
+    try {
+      await login(email, password);
+      navigate("/"); // или куда ты хочешь после логина
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -40,9 +61,11 @@ export function Login() {
         >
           <input
             className={styles.input_auth}
-            placeholder="Email or username"
+            placeholder="Email"
             type="text"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
 
           <input
@@ -50,10 +73,28 @@ export function Login() {
             placeholder="Password"
             type="password"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
-          <button className={styles.button_submit} type="submit">
-            Login
+          {error && (
+            <p
+              style={{
+                color: "#ff7b7b",
+                marginTop: "-20px",
+                textAlign: "center",
+              }}
+            >
+              {error}
+            </p>
+          )}
+
+          <button
+            className={styles.button_submit}
+            type="submit"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Loading..." : "Login"}
           </button>
 
           <p style={{ color: "orange" }}>

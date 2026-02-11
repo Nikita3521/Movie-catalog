@@ -486,8 +486,7 @@ html {
 
     .poster {
         width: 160px;
-        height: auto;
-        max-height: 240px;
+        height: 240px;
         object-fit: contain;
         border-radius: 8px;
     }
@@ -534,4 +533,9 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.star {
+    height: 16px;
+    width: 34px;
 }

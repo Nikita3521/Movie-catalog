@@ -2,7 +2,6 @@
 
 .header {
     background-color: #202020;
-    height: 68px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -18,7 +17,7 @@
     margin: 0 auto;
     max-width: 1080px;
     width: 100%;
-    padding: 0 16px;
+    padding: 20px 16px;
 }
 
 .content {
@@ -166,39 +165,50 @@
 
 @media (max-width: 480px) {
     .content {
+        display: flex;
         flex-direction: row-reverse;
-        gap: 12px;
+        justify-content: space-between;
+        column-gap: 150px;
+        align-items: center;
+        flex-wrap: wrap;
     }
 
-    /* Burger visible */
+    .logoWrapper {
+        justify-content: flex-start;
+    }
+
     .burger {
         display: flex;
     }
 
     /* Mobile menu */
     .navList {
-        position: absolute;
-        top: 0px;
-        left: 0;
+        flex-basis: 100%;
         width: 100%;
         background-color: #202020;
         flex-direction: column;
         align-items: center;
-        gap: 20px;
-        padding: 24px 0;
-        border-bottom: 3px solid orange;
-
-        transform: translateY(-120%);
-        transition: transform 0.3s ease;
-        z-index: 100;
+        gap: 24px;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        pointer-events: none;
+        padding: 0;
+        transition:
+            max-height 0.3s ease,
+            opacity 0.25s ease,
+            margin 0.3s ease;
     }
 
     .navListOpen {
-        transform: translateY(40%);
+        max-height: 180px;
+        opacity: 1;
+        pointer-events: auto;
+        margin-top: 20px;
     }
 
     .navLink {
-        font-size: 14px;
+        font-size: 16px;
     }
 
     .loginButton {
