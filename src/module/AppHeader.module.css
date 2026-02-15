@@ -73,6 +73,7 @@
     text-decoration: none;
     position: relative;
     transition: color 0.2s ease;
+    cursor: pointer;
 }
 
 .navLink::after {
@@ -114,6 +115,17 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(255, 165, 0, 0.35);
     opacity: 0.95;
+}
+
+.userAvatar {
+    border-radius: 5px;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 1px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 /* ================= BURGER ================= */

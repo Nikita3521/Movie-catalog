@@ -43,9 +43,6 @@ export function MovieCatalog() {
     setSort(updated);
   };
 
-  const genreParam =
-    selectedGenre !== "" ? `&with_genres=${selectedGenre}` : "";
-
   const fetchData = async (
     field = sort.field,
     dir = sort.direction,
@@ -94,6 +91,21 @@ export function MovieCatalog() {
       }
     };
   }, [query, selectedGenre, sort, page]);
+
+  const addToWatchlist = async (item: Movie) => {
+    const token = localStorage.getItem("token");
+
+    await fetch("http://localhost:5000/api/watchlist", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        movieId: item.id,
+      }),
+    });
+  };
 
   if (loading) {
     return (
@@ -210,7 +222,12 @@ export function MovieCatalog() {
                 <Link to={`/movie/${item.id}`}>
                   <button className={styles.btnWhite}>VIEW DETAILS</button>
                 </Link>
-                <button className={styles.btnDark}>ADD TO WATCHLISTS</button>
+                <button
+                  className={styles.btnDark}
+                  onClick={() => addToWatchlist(item)}
+                >
+                  ADD TO WATCHLISTS
+                </button>
               </div>
             </div>
           </div>
