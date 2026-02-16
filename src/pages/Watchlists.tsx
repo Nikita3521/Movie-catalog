@@ -61,7 +61,7 @@ export function Watchlists() {
 
             <div className={styles.info}>
               <h4 className={styles.movie_title}>{movie.title}</h4>
-              <p>⭐ {movie.vote_average}</p>
+              <p>⭐ {movie.vote_average.toFixed(1)}</p>
 
               <Link to={`/movie/${movie.id}`}>
                 <button className={styles.detailsBtn}>View details</button>

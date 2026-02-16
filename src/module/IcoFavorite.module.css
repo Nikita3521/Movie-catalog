@@ -1,0 +1,22 @@
+.starIcon {
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+}
+
+.starPath {
+    stroke: orange;
+    stroke-width: 8.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: transparent;
+    transition: fill 0.3s;
+}
+
+.starIcon:hover .starPath {
+    fill: orange;
+}
+
+.starIconActive {
+    fill: orange;
+}

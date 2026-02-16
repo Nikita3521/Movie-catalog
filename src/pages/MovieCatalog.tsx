@@ -4,6 +4,7 @@ import logo from "../img/MovieCatalog/IMDBLogo.svg";
 import { useGenre } from "../context/GenreContext";
 import styles from "../module/MovieCatalog.module.css";
 import { Link } from "react-router-dom";
+import IcoFavorite from "../components/IcoFavorite";
 
 type Movie = {
   backdrop_path: string;
@@ -27,6 +28,7 @@ export function MovieCatalog() {
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Movie[]>([]);
   const [total, setTotal] = useState(0);
+  const [watchlistIds, setWatchlistIds] = useState<Set<number>>(new Set());
   const [query, setQuery] = useState("");
   const [selectedGenre, setSelectedGenre] = useState<number | "">("");
   const isSearching = query.trim() !== "";
@@ -92,10 +94,14 @@ export function MovieCatalog() {
     };
   }, [query, selectedGenre, sort, page]);
 
+  useEffect(() => {
+    loadWatchlist();
+  }, []);
+
   const addToWatchlist = async (item: Movie) => {
     const token = localStorage.getItem("token");
 
-    await fetch("http://localhost:5000/api/watchlist", {
+    const response = await fetch("http://localhost:5000/api/watchlist", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -105,6 +111,68 @@ export function MovieCatalog() {
         movieId: item.id,
       }),
     });
+
+    if (response.ok) {
+      setWatchlistIds((prev) => {
+        const next = new Set(prev);
+        next.add(item.id);
+        return next;
+      });
+    }
+  };
+
+  const removeFromWatchlist = async (item: Movie) => {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch("http://localhost:5000/api/watchlist", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        movieId: item.id,
+      }),
+    });
+
+    if (response.ok) {
+      setWatchlistIds((prev) => {
+        const next = new Set(prev);
+        next.delete(item.id);
+        return next;
+      });
+    }
+  };
+
+  const toggleWatchlist = async (item: Movie) => {
+    if (watchlistIds.has(item.id)) {
+      await removeFromWatchlist(item);
+      return;
+    }
+
+    await addToWatchlist(item);
+  };
+
+  const loadWatchlist = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setWatchlistIds(new Set());
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/watchlist", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const json = await res.json();
+      const ids: number[] = json.watchlist ?? [];
+      setWatchlistIds(new Set(ids));
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   if (loading) {
@@ -222,12 +290,9 @@ export function MovieCatalog() {
                 <Link to={`/movie/${item.id}`}>
                   <button className={styles.btnWhite}>VIEW DETAILS</button>
                 </Link>
-                <button
-                  className={styles.btnDark}
-                  onClick={() => addToWatchlist(item)}
-                >
-                  ADD TO WATCHLISTS
-                </button>
+                <div onClick={() => toggleWatchlist(item)}>
+                  <IcoFavorite isActive={watchlistIds.has(item.id)} />
+                </div>
               </div>
             </div>
           </div>
