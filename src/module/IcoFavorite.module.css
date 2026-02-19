@@ -1,12 +1,12 @@
 .starIcon {
-    width: 28px;
-    height: 28px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
 }
 
 .starPath {
     stroke: orange;
-    stroke-width: 8.5;
+    stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
     fill: transparent;

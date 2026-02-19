@@ -255,48 +255,49 @@ export function MovieCatalog() {
               : ""}
           </button>
         </div>
+        <div className={styles.moviesGrid}>
+          {data.map((item) => (
+            <div className={styles.movie} key={item.id}>
+              <img
+                className={styles.poster}
+                src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
+                alt="no photo "
+              />
 
-        {data.map((item) => (
-          <div className={styles.movie} key={item.id}>
-            <img
-              className={styles.poster}
-              src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-              alt="no photo "
-            />
+              <div className={styles.movieDetails}>
+                <h5 className={styles.movieName}>
+                  {item.title || item.original_name}
+                </h5>
+                <ul className={styles.genreList}>
+                  {(item.genre_ids ?? []).map((e) => (
+                    <li className={styles.genreItem} key={`${item.id}-${e}`}>
+                      {genres.get(e)}
+                    </li>
+                  ))}
+                </ul>
 
-            <div className={styles.movieDetails}>
-              <h5 className={styles.movieName}>
-                {item.title || item.original_name}
-              </h5>
-              <ul className={styles.genreList}>
-                {(item.genre_ids ?? []).map((e) => (
-                  <li className={styles.genreItem} key={`${item.id}-${e}`}>
-                    {genres.get(e)}
-                  </li>
-                ))}
-              </ul>
+                <div className={styles.rating}>
+                  <img src={logo} alt="" className={styles.star} />
+                  {item.vote_average > 1
+                    ? item.vote_average.toFixed(1)
+                    : item.vote_average}
+                  <img src={star} alt="" />
+                </div>
 
-              <div className={styles.rating}>
-                <img src={logo} alt="" className={styles.star} />
-                {item.vote_average > 1
-                  ? item.vote_average.toFixed(1)
-                  : item.vote_average}
-                <img src={star} alt="" />
-              </div>
+                <p className={styles.overview}>{item.overview}</p>
 
-              <p className={styles.overview}>{item.overview}</p>
-
-              <div className={styles.movieButtons}>
-                <Link to={`/movie/${item.id}`}>
-                  <button className={styles.btnWhite}>VIEW DETAILS</button>
-                </Link>
-                <div onClick={() => toggleWatchlist(item)}>
-                  <IcoFavorite isActive={watchlistIds.has(item.id)} />
+                <div className={styles.movieButtons}>
+                  <Link to={`/movie/${item.id}`}>
+                    <button className={styles.btnWhite}>VIEW DETAILS</button>
+                  </Link>
+                  <div onClick={() => toggleWatchlist(item)}>
+                    <IcoFavorite isActive={watchlistIds.has(item.id)} />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
 
         <div className={styles.pagination}>
           <button
