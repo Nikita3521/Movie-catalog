@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import star from "../img/MovieCatalog/v-icon.png";
 import logo from "../img/MovieCatalog/IMDBLogo.svg";
 import { useGenre } from "../context/GenreContext";
@@ -45,38 +45,41 @@ export function MovieCatalog() {
     setSort(updated);
   };
 
-  const fetchData = async (
-    field = sort.field,
-    dir = sort.direction,
-    genresList = selectedGenre,
-    search = query,
-  ) => {
-    try {
-      setLoading(true);
+  const fetchData = useCallback(
+    async (
+      field = sort.field,
+      dir = sort.direction,
+      genresList = selectedGenre,
+      search = query,
+    ) => {
+      try {
+        setLoading(true);
 
-      let url = "";
+        let url = "";
 
-      if (search.trim().length > 0) {
-        url = `https://api.themoviedb.org/3/search/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&query=${encodeURIComponent(
-          search,
-        )}&page=${page}&sort_by=${field}.${dir}&vote_count.gte=50&include_adult=false`;
-      } else {
-        url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}&vote_count.gte=50&include_adult=false${
-          selectedGenre !== "" ? `&with_genres=${selectedGenre}` : ""
-        }`;
+        if (search.trim().length > 0) {
+          url = `https://api.themoviedb.org/3/search/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&query=${encodeURIComponent(
+            search,
+          )}&page=${page}&sort_by=${field}.${dir}&vote_count.gte=50&include_adult=false`;
+        } else {
+          url = `https://api.themoviedb.org/3/discover/movie?api_key=3a1ca9b3f541f933ecd4468611a1334e&page=${page}&sort_by=${field}.${dir}&vote_count.gte=50&include_adult=false${
+            genresList !== "" ? `&with_genres=${genresList}` : ""
+          }`;
+        }
+
+        const response = await fetch(url);
+        const json = await response.json();
+
+        setData(json.results ?? []);
+        setTotal(json.total_results ?? 0);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
       }
-
-      const response = await fetch(url);
-      const json = await response.json();
-
-      setData(json.results ?? []);
-      setTotal(json.total_results ?? 0);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [page, query, selectedGenre, sort.direction, sort.field],
+  );
 
   useEffect(() => {
     if (searchTimeout.current) {
@@ -92,7 +95,7 @@ export function MovieCatalog() {
         clearTimeout(searchTimeout.current);
       }
     };
-  }, [query, selectedGenre, sort, page]);
+  }, [fetchData, page, query, selectedGenre, sort]);
 
   useEffect(() => {
     loadWatchlist();
@@ -261,7 +264,7 @@ export function MovieCatalog() {
               <img
                 className={styles.poster}
                 src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
-                alt="no photo "
+                alt={item.title || item.original_name || "Movie poster"}
               />
 
               <div className={styles.movieDetails}>

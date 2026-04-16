@@ -99,7 +99,7 @@ export function ViewDetails() {
               </div>
             )}
 
-            {data.runtime != 0 && (
+            {data.runtime !== 0 && (
               <div
                 style={{
                   display: "flex",

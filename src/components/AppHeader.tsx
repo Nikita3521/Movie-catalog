@@ -52,7 +52,7 @@ export const AppHeader: React.FC = () => {
             }`}
           >
             <Link to="/" className={styles.navLink} onClick={closeMenu}>
-              AllFilms
+              All Movies
             </Link>
 
             <Link
